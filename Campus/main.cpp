@@ -23,7 +23,7 @@ void StudentTable()
 	PrintStudent(node);
 
 	LINE("’“µΩ")
-		PrintStudent(FindPrevStudent(head,2));
+		PrintStudent(FindStudent(head,1));
 
 	//LINE("≈≈–Ú")
 	//	SortInOption(head);

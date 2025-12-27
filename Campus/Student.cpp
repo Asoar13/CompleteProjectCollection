@@ -3,7 +3,14 @@
 #include<stdlib.h>
 #include<string.h>
 #define PRINT(str) printf("%s\n",str);
-//==============================链表数据操作===================================
+//========================================链表数据操作===========================================
+
+//==============================被回调函数=====================================
+int StudentAge(Node* node) { return node->stu.age; }
+int StudentNum(Node* node) { return node->stu.num; }
+StuDataFunc FunctionArr[] = { StudentAge, StudentNum };
+
+//================================复合函数=====================================
 Node* CreatNode()
 {
 	Node* head = (Node*)calloc(sizeof(Node), 1);
@@ -34,34 +41,16 @@ void PrintAll(Node* head)
 
 void SortInOption(Node* head)
 {
+	//获取选择
 	int option = 1;
-	//交换节点
-	int i = 1;
-	for(Node* cur = head->next, *prev = head; cur->next; i++)
-	{
-		//中间处理
-		printf("开始第%d次\n", i);
-		Node* temp = nullptr, * prev_ = FindPrevStudent(prev, option), * cur_ = prev_->next;
-		//交换
-		if (prev != prev_)
-		{
-		///交换prev的尾巴
-		printf("完成第%d次prev交换\n", i);
-		temp = prev->next;	prev->next = prev_->next;	prev_->next = temp;
-		///交换cur的尾巴
-		printf("完成第%d次cur交换\n", i);
-		temp = cur->next;	cur->next = cur_->next;		cur_->next = temp;
-		}
-		//前进
-		cur = prev->next->next;
-		prev = prev->next;
-		PRINT("下一个节点是")
-		PrintStudent(cur);
-		PRINT("\n当前链表")
-			PrintAll(head);
-		//if (cur->next) printf("下一个节点的尾是NULL\n");
-		printf("完成第%d次\n", i);
+	//拼接法排序
+	Node* temp_head = CreatNode(), *node = temp_head;	//head的副本
+	for (Node* cur = head; cur->next; cur = cur->next)	//最后一次是cur -> node -> NULL	
+	{													
+		node->next = FindStudent(cur,option);	
+		node = node->next;
 	}
+	printf("完成排序\n");
 }
 
 void DeleteAll(Node* head)
@@ -76,9 +65,10 @@ void DeleteAll(Node* head)
 	printf("成功删除所有数据!\n");
 }
 
+
 int CheckContinue()
 {
-	printf("输入【q】退出，【其他键】继续\n");
+	printf("输入【q】退出，【其他键】继续 =>");
 	char respone;
 	while ('\n' != getchar());
 	scanf("%c",&respone);
@@ -111,36 +101,32 @@ void AddStudent(Node* head)
 	 printf("写入完成！\n");
 }
 
-Node* FindPrevStudent(Node* head, size_t option)
+Node* FindStudent(Node* head, size_t option)	//找出head后面除了本身的最大值的node
 {
-	size_t offset;
-	//取得对应的偏移量
-	switch (option)
+	//获取选项对应的函数
+	if (option < 1 || option > 2)
 	{
-	case 1:		
-		offset = offsetof(Student, num);
-		break;
-	case 2:
-		offset = offsetof(Student, age);
-		break;
-	default:
-		printf("操作有误！\n");
-		return 0;
+		printf("没有此选项");
+		return nullptr;
 	}
-	//找到最大数
-	Node* move_node = head->next, * target_node = nullptr, *prev_node = head;
-	for (int max = 1000; move_node; move_node = move_node->next)	//用for循环移动
+	StuDataFunc GetStuData = FunctionArr[option-1];
+	//找出列表最大值
+	if (head == nullptr || head->next == nullptr) {
+		// printf("链表为空，无法查找\n");
+		return nullptr;
+	}
+	int max = GetStuData(head->next);	//初始化为第一个
+	Node* target_node = head->next;		//初始化为第一个
+	//遍历链表
+	for (Node* cur = head->next; cur; cur->next)
 	{
-		int temp = *((int*) ((char*)&(move_node->stu) + offset) );	//原始化步长，加上偏移量再转回int型,并且解引用
-		if( temp < max)
+		int temp = GetStuData(cur);
+		if (temp > max)
 		{
 			max = temp;
-			printf("Max: %d\n",max);
-			target_node = prev_node;
+			target_node = cur;
 		}
-		prev_node = move_node;
 	}
-	//返回前驱节点
 	return target_node;
 }
 
@@ -161,7 +147,7 @@ void DeleteNextStudent(Node* node)
 	node->next = node->next->next;
 }
 
-//==============================链表文件操作===================================
+//====================================链表文件操作===================================
 void SaveData(Node* head)
 {
 	//进入文件
