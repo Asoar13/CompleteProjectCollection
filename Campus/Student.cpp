@@ -126,7 +126,7 @@ Node* FindPrevStudent(Node* head, size_t option)	//ÕÒ³öheadºóÃæ³ýÁË±¾ÉíµÄ×î´óÖµµ
 		return nullptr;
 	}
 	int max = GetStuData(head->next);	//³õÊ¼»¯ÎªµÚÒ»¸ö
-	Node* target_node = head->next;		//³õÊ¼»¯ÎªµÚÒ»¸ö
+	Node* target_node = head;		//³õÊ¼»¯ÎªµÚÒ»¸ö
 	//±éÀúÁ´±í,ÕÒ³ö×î´óÖµ
 	Node* prev_node = head;
 	for (Node* cur = head->next; cur; cur = cur->next)
