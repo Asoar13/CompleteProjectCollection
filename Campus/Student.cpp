@@ -44,13 +44,23 @@ void SortInOption(Node* head)
 	//获取选择
 	int option = 1;
 	//拼接法排序
-	Node* temp_head = CreatNode(), *node = temp_head;	//head的副本
-	for (Node* cur = head; cur->next; cur = cur->next)	//最后一次是cur -> node -> NULL	
-	{													
-		node->next = FindStudent(cur,option);	
-		node = node->next;
+	Node* temp_head = CreatNode(), *node = temp_head, *tail = node;	//head的副本
+	Node* cur = head, * prev_cur;
+	while ( cur->next )		//最后一次执行是cur -> node -> NULL
+	{					
+		printf("【一个node拼接开始 -");
+		prev_cur = FindPrevStudent(cur, option);
+		printf("> 找到max -");
+		node = prev_cur->next;		//记录最大节点
+		prev_cur->next = prev_cur->next->next;	//删除最大节点
+		node->next = nullptr;		//彻底从cur剔除node
+		printf("> 提取出max的node -");
+		tail->next = node;
+		tail = tail->next;		 //前进tail
+		printf("> 拼接到temp_head完成！】\n");
 	}
 	printf("完成排序\n");
+	head->next = temp_head->next;
 }
 
 void DeleteAll(Node* head)
@@ -68,7 +78,7 @@ void DeleteAll(Node* head)
 
 int CheckContinue()
 {
-	printf("输入【q】退出，【其他键】继续 =>");
+	printf("输入【q】退出，【其他键】继续 => ");
 	char respone;
 	while ('\n' != getchar());
 	scanf("%c",&respone);
@@ -101,7 +111,7 @@ void AddStudent(Node* head)
 	 printf("写入完成！\n");
 }
 
-Node* FindStudent(Node* head, size_t option)	//找出head后面除了本身的最大值的node
+Node* FindPrevStudent(Node* head, size_t option)	//找出head后面除了本身的最大值的node返回的是prev
 {
 	//获取选项对应的函数
 	if (option < 1 || option > 2)
@@ -109,23 +119,25 @@ Node* FindStudent(Node* head, size_t option)	//找出head后面除了本身的最大值的nod
 		printf("没有此选项");
 		return nullptr;
 	}
-	StuDataFunc GetStuData = FunctionArr[option-1];
-	//找出列表最大值
+	StuDataFunc GetStuData = FunctionArr[option - 1];
+	//初始化
 	if (head == nullptr || head->next == nullptr) {
 		// printf("链表为空，无法查找\n");
 		return nullptr;
 	}
 	int max = GetStuData(head->next);	//初始化为第一个
 	Node* target_node = head->next;		//初始化为第一个
-	//遍历链表
-	for (Node* cur = head->next; cur; cur->next)
+	//遍历链表,找出最大值
+	Node* prev_node = head;
+	for (Node* cur = head->next; cur; cur = cur->next)
 	{
 		int temp = GetStuData(cur);
 		if (temp > max)
 		{
 			max = temp;
-			target_node = cur;
+			target_node = prev_node;
 		}
+		prev_node = cur;	//最后更新，确保target_node是prev
 	}
 	return target_node;
 }

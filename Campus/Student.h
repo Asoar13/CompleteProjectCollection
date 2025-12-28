@@ -25,7 +25,7 @@ extern StuDataFunc FunctionArr[];
 //»ù±¾º¯Êý
 int CheckContinue();
 void AddStudent(Node* head);
-Node* FindStudent(Node* head, size_t option);
+Node* FindPrevStudent(Node* head, size_t option);
 void PrintStudent(Node* node);
 void DeleteNextStudent(Node* node);
 

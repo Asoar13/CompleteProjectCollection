@@ -16,23 +16,23 @@ void StudentTable()
 		Node* head = CreatNode();
 	LoadData(head);
 
-	LINE("写入")
-		AddStudents(head);
-	Node* node = head;
-	for (; node->next; node = node->next);
-	PrintStudent(node);
+	//LINE("写入")
+	//	AddStudents(head);
+	//Node* node = head;
+	//for (; node->next; node = node->next);
+	//PrintStudent(node);
 
-	LINE("找到")
-		PrintStudent(FindStudent(head,1));
+	//LINE("找到")
+	//	PrintStudent(FindPrevStudent(head,1));
 
-	//LINE("排序")
-	//	SortInOption(head);
+	LINE("排序")
+		SortInOption(head);
 
-	//LINE("全部")
-	//	PrintAll(head);
+	LINE("全部")
+		PrintAll(head);
 
-	LINE("删除")
-	DeleteAll(head);
+	//LINE("删除")
+	//DeleteAll(head);
 
 	LINE("结束")
 		SaveData(head);
