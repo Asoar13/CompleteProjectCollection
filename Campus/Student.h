@@ -1,6 +1,6 @@
 #ifndef STUDENT
 #define STUDENT
-#define LENGTH 10
+#define LENGTH 20
 
 typedef struct 
 {
@@ -21,9 +21,11 @@ int StudentNum(Node* node);
 //函数指针数组
 typedef int (*StuDataFunc) (Node*);
 extern StuDataFunc FunctionArr[];
+extern const int DataFuncCount;
 
 //基本函数
 int CheckContinue();
+void PrintError(const char* promot);
 void AddStudent(Node* head);
 Node* FindPrevStudent(Node* head, size_t option);
 void PrintStudent(Node* node);
@@ -35,7 +37,7 @@ void AddStudents(Node* head);
 void PrintAll(Node* head);
 void SortInOption(Node* head);
 void DeleteAll(Node* head);
-void;
+void ;
 
 ///链表文件操作
 void SaveData(Node* head);

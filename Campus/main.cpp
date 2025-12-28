@@ -18,9 +18,6 @@ void StudentTable()
 
 	LINE("–¥»Î")
 		AddStudents(head);
-	Node* node = head;
-	for (; node->next; node = node->next);
-	PrintStudent(node);
 
 	//LINE("’“µΩ")
 	//	PrintStudent(FindPrevStudent(head,1));

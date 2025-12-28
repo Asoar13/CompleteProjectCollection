@@ -8,7 +8,8 @@
 //==============================被回调函数=====================================
 int StudentAge(Node* node) { return node->stu.age; }
 int StudentNum(Node* node) { return node->stu.num; }
-StuDataFunc FunctionArr[] = { StudentAge, StudentNum };
+StuDataFunc FunctionArr[] = { StudentNum, StudentAge };
+extern const int DataFuncCount = sizeof(FunctionArr) / sizeof(FunctionArr[0]);
 
 //================================复合函数=====================================
 Node* CreatNode()
@@ -41,26 +42,40 @@ void PrintAll(Node* head)
 
 void SortInOption(Node* head)
 {
-	//获取选择
-	int option = 1;
-	//拼接法排序
-	Node* temp_head = CreatNode(), *node = temp_head, *tail = node;	//head的副本
-	Node* cur = head, * prev_cur;
-	while ( cur->next )		//最后一次执行是cur -> node -> NULL
-	{					
-		printf("【一个node拼接开始 -");
-		prev_cur = FindPrevStudent(cur, option);
-		printf("> 找到max -");
-		node = prev_cur->next;		//记录最大节点
-		prev_cur->next = prev_cur->next->next;	//删除最大节点
-		node->next = nullptr;		//彻底从cur剔除node
-		printf("> 提取出max的node -");
-		tail->next = node;
-		tail = tail->next;		 //前进tail
-		printf("> 拼接到temp_head完成！】\n");
-	}
-	printf("完成排序\n");
-	head->next = temp_head->next;
+	do{
+		//获取选择
+		int option = 0;
+		printf("(1 -> 学号\n(2 -> 年龄\n输入选项 => ");
+		if (!scanf("%d",&option)) 
+		{
+			printf("格式错误！\n");
+			continue;
+		}
+		if (option < 1 || option > DataFuncCount)
+		{
+			printf("没有此选项！\n");
+			continue;
+		}
+		//拼接法排序
+		Node* temp_head = CreatNode(), * node = temp_head, * tail = node;	//head的副本
+		Node* cur = head, * prev_cur;
+		while (cur->next)		//最后一次执行是cur -> node -> NULL
+		{
+			printf("【一个node拼接开始 -");
+			prev_cur = FindPrevStudent(cur, option);
+			printf("> 找到max -");
+			node = prev_cur->next;		//记录最大节点
+			prev_cur->next = prev_cur->next->next;	//删除最大节点
+			node->next = nullptr;		//彻底从cur剔除node
+			printf("> 提取出max的node -");
+			tail->next = node;
+			tail = tail->next;		 //前进tail
+			printf("> 拼接到temp_head完成！】\n");
+		}
+		printf("完成排序\n");
+		head->next = temp_head->next;
+		return;
+	}while (CheckContinue());
 }
 
 void DeleteAll(Node* head)
@@ -78,12 +93,20 @@ void DeleteAll(Node* head)
 
 int CheckContinue()
 {
-	printf("输入【q】退出，【其他键】继续 => ");
+	printf("输入【q】退出，【其他键+回车】继续 => ");
 	char respone;
+	respone = getchar();
 	while ('\n' != getchar());
-	scanf("%c",&respone);
+	printf("\n");
 	if (respone == 'q')	return 0;
 	return 1;
+}
+
+void PrintError(const char* promot)
+{
+	printf("格式错误！ or %s不合理！\n重新输入%s：",promot, promot);
+	//废除错除输入
+	while (getchar() != '\n');	
 }
 
 //=================================基本函数====================================
@@ -96,29 +119,26 @@ void AddStudent(Node* head)
 		printf("内存分配失败！");
 		return;
 	}
-	 printf("学号：");
-	 scanf("%d",&node->stu.num);
-	 printf("姓名：");
-	 scanf("%s", node->stu.name);
-	 printf("年龄：");
-	 scanf("%d",&node->stu.age);
-	 Node* cur = (Node*)head;
-	 while (cur->next)
-	 {
-		 cur = cur->next;
-	 }
-	 cur->next = node;
-	 printf("写入完成！\n");
+	printf("学号：");
+	while (!scanf(" %d", &node->stu.num) || node->stu.num < 0)	PrintError("学号");
+	while (getchar() != '\n');		//处理'\n'
+	printf("姓名：");			
+	while (!scanf("%s", node->stu.name))	PrintError("姓名");
+	printf("年龄：");
+	while (!scanf(" %d", &node->stu.age) || node->stu.age<0 || node->stu.age>120)	PrintError("年龄");
+	while (getchar() != '\n');		//处理'\n'
+	Node* cur = (Node*)head;
+	while (cur->next)
+	{
+	 cur = cur->next;
+	}
+	cur->next = node;
+	printf("写入完成！\n");
 }
 
 Node* FindPrevStudent(Node* head, size_t option)	//找出head后面除了本身的最大值的node返回的是prev
 {
 	//获取选项对应的函数
-	if (option < 1 || option > 2)
-	{
-		printf("没有此选项");
-		return nullptr;
-	}
 	StuDataFunc GetStuData = FunctionArr[option - 1];
 	//初始化
 	if (head == nullptr || head->next == nullptr) {
