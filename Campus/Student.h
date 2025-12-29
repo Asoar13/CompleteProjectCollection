@@ -1,4 +1,7 @@
 #ifndef STUDENT
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
 #define STUDENT
 #define LENGTH 10
 
@@ -13,12 +16,20 @@ typedef struct node
 	node* next;
 	Student stu;
 }Node;
+typedef struct Nd_node
+{
+	Node* node;
+	Nd_node* next;
+}Nd_node;
 
 ///链表数据操作
 // 回调函数的函数指针
+bool UpperNum(int a, int b);
+bool LowerNum(int a, int b);
 int StudentAge(Node* node);
 int StudentNum(Node* node);
 //函数指针数组
+typedef bool (*CompareFunc)(int, int);
 typedef int (*StuDataFunc) (Node*);
 extern StuDataFunc FunctionArr[];
 extern const int DataFuncCount;
@@ -31,9 +42,6 @@ void PrintStudent(Node* node);
 void DeleteNextStudent(Node* node);
 
 //辅助函数
-bool UpperNum(int a, int b);
-bool LowerNum(int a, int b);
-typedef bool (*CompareFunc)(int, int);
 int CheckContinue();
 void ClearInputBuffer();
 void PrintError(const char* promot);
@@ -44,7 +52,8 @@ void AddStudents(Node* head);
 void PrintAll(Node* head);
 void SortInOption(Node* head);
 void DeleteAll(Node* head);
-void ;
+void DeleteByName(Node* head, const char* target_name);
+void DeleteByNum(Node* head , int tatget_num);
 
 ///链表文件操作
 void SaveData(Node* head);

@@ -1,11 +1,10 @@
 #include "Student.h"
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
 #define PRINT(str) printf("%s\n",str);
 //========================================链表数据操作===========================================
 
 //==============================被回调函数=====================================
+bool UpperNum(int a, int b) { return (a > b); }
+bool LowerNum(int a, int b) { return (a < b); }
 int StudentAge(Node* node) { return node->stu.age; }
 int StudentNum(Node* node) { return node->stu.num; }
 extern StuDataFunc FunctionArr[] = { StudentNum, StudentAge };
@@ -74,10 +73,90 @@ void DeleteAll(Node* head)
 	printf("成功删除所有数据!\n");
 }
 
+void DeleteByName(Node* head, const char* target_name)
+{
+	if (!head->next)
+	{
+		printf("链表中没有数据\n");
+		return;
+	}
+	//准备遍历链表
+	int count = 0;
+	Nd_node* nd_head = (Nd_node*)calloc(sizeof(Nd_node), 1);
+	Nd_node* nd_node = nd_head;			//代表nd_head，但是会移动，用来存pre
+	if (!nd_head)
+	{
+		printf("链表2的节点创建失败，可能是内存不足！\n");
+		return;
+	}
+	//遍历整个链表找到n个目标的前驱节点
+	for (Node* pre = head; pre->next; pre = pre->next)
+	{
+		if (!strcmp(pre->next->stu.name, target_name))
+		{
+			//储存节点
+			///创建Nd_node节点存node
+			Nd_node *temp_nd_node = (Nd_node*)calloc(sizeof(Nd_node), 1);
+			if (!temp_nd_node)
+			{
+				printf("链表2的节点创建失败，可能是内存不足！\n");
+				return;
+			}
+			///接上temp_nd_node
+			nd_node->next = temp_nd_node;
+			///pre存入temp_nd_node
+			temp_nd_node->node = pre;
+			///移动 并 计数
+			nd_node = nd_node->next;
+			count++;
+		}
+	}
+	//分类讨论
+	///n个目标
+	if (count > 1)
+	{
+		int i = 1;			//一个目标代表一个序号
+		printf("找到%d个符合目标，如下: ",count);
+		////显示选项
+		for (nd_node = nd_head->next; nd_node; nd_node = nd_node->next)
+		{
+			printf("【%d】 -> ",i++);
+			PrintStudent(nd_node->node->next);
+		}
+		////接收选项
+		printf("输入需要删除的对象序号 => ");
+		while (!scanf("%d", &i) || i > count || i < 0) PrintError("序号");
+		nd_node = nd_head->next;
+		////找到对应节点
+		for (int j = 0; j < i; j++)
+			nd_node = nd_node->next;
+		////删除
+		printf("删除了：");
+		PrintStudent(nd_node->node->next);
+		DeleteNextStudent(nd_node->node);
+	}
+	///一个目标
+	else if(count == 1)
+	{
+		printf("删除了：");
+		PrintStudent(nd_head->next->node->next);	//head不存值
+		DeleteNextStudent(nd_head->next->node);
+	}
+	///没有目标节点
+	else
+	{
+		printf("查无此人！\n");
+	}
+}
+
+//			//汇报操作
+//			printf("找到第%d个节点为目标节点\n", i);
+//			printf("名字是：%s", target_pre->next->stu.name);
+//
+// 			删除前驱节点之后的节点
+//			DeleteNextStudent(target_pre);
 //=================================辅助函数====================================
 
-bool UpperNum(int a, int b) { return (a > b); }
-bool LowerNum(int a, int b) { return (a < b); }
 
 int CheckContinue()
 {
@@ -208,7 +287,9 @@ void DeleteNextStudent(Node* node)
 		return;
 	}
 	//首和中间的删除
+	Node* rubish_node = node->next;
 	node->next = node->next->next;
+	free(rubish_node);
 }
 
 //====================================链表文件操作===================================
@@ -264,8 +345,6 @@ void LoadData(Node* head)
 		}
 		else
 			break;
-		//展示
-		printf("%s(%d岁) %d号\n", node->stu.name, node->stu.age, node->stu.num);
 	}
 	printf("成功更新了%d个数据\n", i);
 	//退出文件
