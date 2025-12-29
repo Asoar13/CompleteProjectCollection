@@ -1,6 +1,6 @@
 #ifndef STUDENT
 #define STUDENT
-#define LENGTH 20
+#define LENGTH 10
 
 typedef struct 
 {
@@ -25,14 +25,18 @@ extern const int DataFuncCount;
 
 //基本函数
 void AddStudent(Node* head);
-Node* FindPrevStudent(Node* head, size_t option);
+Node* FindPrevStudent(Node* head, size_t option, size_t method);
+void GetOption(int *option, int * sort_method);
 void PrintStudent(Node* node);
 void DeleteNextStudent(Node* node);
 
 //辅助函数
+bool UpperNum(int a, int b);
+bool LowerNum(int a, int b);
+typedef bool (*CompareFunc)(int, int);
 int CheckContinue();
+void ClearInputBuffer();
 void PrintError(const char* promot);
-
 
 //复合函数
 Node* CreatNode();

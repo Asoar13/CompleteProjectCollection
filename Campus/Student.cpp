@@ -8,8 +8,9 @@
 //==============================±ªªÿµ˜∫Ø ˝=====================================
 int StudentAge(Node* node) { return node->stu.age; }
 int StudentNum(Node* node) { return node->stu.num; }
-StuDataFunc FunctionArr[] = { StudentNum, StudentAge };
+extern StuDataFunc FunctionArr[] = { StudentNum, StudentAge };
 extern const int DataFuncCount = sizeof(FunctionArr) / sizeof(FunctionArr[0]);
+extern const char* option_str[] = { "—ß∫≈","ƒÍ¡‰" };
 
 //================================∏¥∫œ∫Ø ˝=====================================
 Node* CreatNode()
@@ -42,40 +43,23 @@ void PrintAll(Node* head)
 
 void SortInOption(Node* head)
 {
-	do{
-		//ªÒ»°—°‘Ò
-		int option = 0;
-		printf("(1 -> —ß∫≈\n(2 -> ƒÍ¡‰\n ‰»Î—°œÓ => ");
-		if (!scanf("%d",&option)) 
-		{
-			printf("∏Ò Ω¥ÌŒÛ£°\n");
-			continue;
-		}
-		if (option < 1 || option > DataFuncCount)
-		{
-			printf("√ª”–¥À—°œÓ£°\n");
-			continue;
-		}
-		//∆¥Ω”∑®≈≈–Ú
-		Node* temp_head = CreatNode(), * node = temp_head, * tail = node;	//headµƒ∏±±æ
-		Node* cur = head, * prev_cur;
-		while (cur->next)		//◊Ó∫Û“ª¥Œ÷¥–– «cur -> node -> NULL
-		{
-			printf("°æ“ª∏ˆnode∆¥Ω”ø™ º -");
-			prev_cur = FindPrevStudent(cur, option);
-			printf("> ’“µΩmax -");
-			node = prev_cur->next;		//º«¬º◊Ó¥ÛΩ⁄µ„
-			prev_cur->next = prev_cur->next->next;	//…æ≥˝◊Ó¥ÛΩ⁄µ„
-			node->next = nullptr;		//≥πµ◊¥”curÃﬁ≥˝node
-			printf("> Ã·»°≥ˆmaxµƒnode -");
-			tail->next = node;
-			tail = tail->next;		 //«∞Ω¯tail
-			printf("> ∆¥Ω”µΩtemp_headÕÍ≥…£°°ø\n");
-		}
-		printf("ÕÍ≥…≈≈–Ú\n");
-		head->next = temp_head->next;
-		return;
-	}while (CheckContinue());
+	int sort_object = 1, sort_method = 1;
+	GetOption(&sort_object, &sort_method);
+	//∆¥Ω”∑®≈≈–Ú
+	Node* temp_head = CreatNode(), * node = temp_head, * tail = node;	//headµƒ∏±±æ
+	Node* cur = head, * prev_cur;
+	while (cur->next)		//◊Ó∫Û“ª¥Œ÷¥–– «cur -> node -> NULL
+	{
+		prev_cur = FindPrevStudent(cur, sort_object, sort_method);
+		node = prev_cur->next;		//º«¬º◊Ó¥ÛΩ⁄µ„
+		prev_cur->next = prev_cur->next->next;	//…æ≥˝◊Ó¥ÛΩ⁄µ„
+		node->next = nullptr;		//≥πµ◊¥”curÃﬁ≥˝node
+		tail->next = node;
+		tail = tail->next;		 //«∞Ω¯tail
+	}
+	const char* method_str[] = { "Ωµ–Ú","…˝–Ú" };
+	printf("“—ÕÍ≥…<%sµƒ%s>≈≈–Ú\n",option_str[sort_object -1], method_str[sort_method]);
+	head->next = temp_head->next;
 }
 
 void DeleteAll(Node* head)
@@ -90,8 +74,11 @@ void DeleteAll(Node* head)
 	printf("≥…π¶…æ≥˝À˘”– ˝æ›!\n");
 }
 
-
 //=================================∏®÷˙∫Ø ˝====================================
+
+bool UpperNum(int a, int b) { return (a > b); }
+bool LowerNum(int a, int b) { return (a < b); }
+
 int CheckContinue()
 {
 	printf(" ‰»Î°æq°øÕÀ≥ˆ£¨°æ∆‰À˚º¸+ªÿ≥µ°øºÃ–¯ => ");
@@ -101,6 +88,12 @@ int CheckContinue()
 	printf("\n");
 	if (respone == 'q')	return 0;
 	return 1;
+}
+
+void ClearInputBuffer()
+{
+	int ch;
+	while((ch = getchar()) != '\n' && ch != EOF);
 }
 
 void PrintError(const char* promot)
@@ -122,12 +115,12 @@ void AddStudent(Node* head)
 	}
 	printf("—ß∫≈£∫");
 	while (!scanf(" %d", &node->stu.num) || node->stu.num < 0)	PrintError("—ß∫≈");
-	while (getchar() != '\n');		//¥¶¿Ì'\n'
+	ClearInputBuffer();		//¥¶¿Ì'\n'
 	printf("–’√˚£∫");			
 	while (!scanf("%s", node->stu.name))	PrintError("–’√˚");
 	printf("ƒÍ¡‰£∫");
-	while (!scanf(" %d", &node->stu.age) || node->stu.age<0 || node->stu.age>120)	PrintError("ƒÍ¡‰");
-	while (getchar() != '\n');		//¥¶¿Ì'\n'
+	while (!scanf(" %d", &node->stu.age) || node->stu.age<0 || node->stu.age>99)	PrintError("ƒÍ¡‰");
+	ClearInputBuffer();		//¥¶¿Ì'\n'
 	Node* cur = (Node*)head;
 	while (cur->next)
 	{
@@ -137,10 +130,11 @@ void AddStudent(Node* head)
 	printf("–¥»ÎÕÍ≥…£°\n");
 }
 
-Node* FindPrevStudent(Node* head, size_t option)	//’“≥ˆhead∫Û√Ê≥˝¡À±æ…Ìµƒ◊Ó¥Û÷µµƒnode∑µªÿµƒ «prev
+Node* FindPrevStudent(Node* head, size_t sort_object, size_t method)	//’“≥ˆhead∫Û√Ê≥˝¡À±æ…Ìµƒ◊Ó¥Û÷µµƒnode∑µªÿµƒ «prev
 {
 	//ªÒ»°—°œÓ∂‘”¶µƒ∫Ø ˝
-	StuDataFunc GetStuData = FunctionArr[option - 1];
+	StuDataFunc GetStuData = FunctionArr[sort_object - 1];
+	CompareFunc Compare = method ? UpperNum : LowerNum;
 	//≥ı ºªØ
 	if (head == nullptr || head->next == nullptr) {
 		// printf("¡¥±ÌŒ™ø’£¨Œﬁ∑®≤È’“\n");
@@ -148,12 +142,12 @@ Node* FindPrevStudent(Node* head, size_t option)	//’“≥ˆhead∫Û√Ê≥˝¡À±æ…Ìµƒ◊Ó¥Û÷µµ
 	}
 	int max = GetStuData(head->next);	//≥ı ºªØŒ™µ⁄“ª∏ˆ
 	Node* target_node = head;		//≥ı ºªØŒ™µ⁄“ª∏ˆ
-	//±È¿˙¡¥±Ì,’“≥ˆ◊Ó¥Û÷µ
+	//±È¿˙¡¥±Ì,’“≥ˆ“™«Û÷µ
 	Node* prev_node = head;
 	for (Node* cur = head->next; cur; cur = cur->next)
 	{
 		int temp = GetStuData(cur);
-		if (temp > max)
+		if (Compare(temp, max))
 		{
 			max = temp;
 			target_node = prev_node;
@@ -163,9 +157,46 @@ Node* FindPrevStudent(Node* head, size_t option)	//’“≥ˆhead∫Û√Ê≥˝¡À±æ…Ìµƒ◊Ó¥Û÷µµ
 	return target_node;
 }
 
+void GetOption(int* sort_object, int* sort_method)
+{
+		//ªÒ»°≈≈–Ú∂‘œÛ—°‘Ò
+	do {
+		printf("\n«Î—°‘Ò≈≈–Ú°∞∂‘œÛ°±\n°æ1°ø -> —ß∫≈\n°æ2°ø -> ƒÍ¡‰\n ‰»Î—°œÓ(ƒ¨»œ£∫1) => ");
+		if (!scanf("%d", sort_object))
+		{
+			printf("∏Ò Ω¥ÌŒÛ£°\n");
+			ClearInputBuffer();
+			continue;
+		}
+		if (*sort_object < 1 || *sort_object > DataFuncCount)
+		{
+			printf("√ª”–¥À—°œÓ£°\n");
+			ClearInputBuffer();
+			continue;
+		}
+		break;
+	} while (CheckContinue());
+		//ªÒ»°≈≈–Ú∑Ω Ω—°‘Ò
+	do{
+		printf("\n«Î—°‘Ò≈≈–Ú°∞∑Ω Ω°±\n°æ0°ø -> Ωµ–Ú\n°æ1°ø -> …˝–Ú\n ‰»Î—°œÓ(ƒ¨»œ£∫1) => ");
+		if (!scanf("%d", sort_method))
+		{
+			printf("∏Ò Ω¥ÌŒÛ£°\n");
+			continue;
+		}
+		if (*sort_method < 0 || *sort_method > 1)
+		{
+			printf("√ª”–¥À—°œÓ£°\n");
+			ClearInputBuffer();
+			continue;
+		}
+		break;
+	}while (CheckContinue());
+}
+
 void PrintStudent(Node* node)
 {
-	printf("%s(%dÀÍ) %d∫≈\n", node->stu.name, node->stu.age, node->stu.num);
+	printf("%10s(%-02dÀÍ) %-d∫≈\n", node->stu.name, node->stu.age, node->stu.num);
 }
 
 void DeleteNextStudent(Node* node)
@@ -214,8 +245,8 @@ void LoadData(Node* head)
 	}
 	//∏¸–¬¡¥±Ì  ( ◊Ω⁄µ„cur)
 	printf("ø™ º∏¸–¬ ˝æ›\n");
-	int i = 0, read_respone = 1;
-	for(Node* cur = (Node*)head; read_respone;cur = cur->next)
+	int i = 0;
+	for(Node* cur = (Node*)head; !feof(fp01);cur = cur->next)
 	{
 		//∂¡»ÎµΩnode
 		Node* node = (Node*)calloc(sizeof(Node), 1);
