@@ -116,7 +116,7 @@ void DeleteByName(Node* head, const char* target_name)
 	if (count > 1)
 	{
 		int i = 1;			//一个目标代表一个序号
-		printf("找到%d个符合目标，如下: ",count);
+		printf("找到%d个符合目标，如下: \n",count);
 		////显示选项
 		for (nd_node = nd_head->next; nd_node; nd_node = nd_node->next)
 		{
@@ -125,10 +125,10 @@ void DeleteByName(Node* head, const char* target_name)
 		}
 		////接收选项
 		printf("输入需要删除的对象序号 => ");
-		while (!scanf("%d", &i) || i > count || i < 0) PrintError("序号");
+		while (!scanf("%d", &i) || i > count || i <= 0) PrintError("序号");
 		nd_node = nd_head->next;
 		////找到对应节点
-		for (int j = 0; j < i; j++)
+		for (int j = 1; j < i; j++)
 			nd_node = nd_node->next;
 		////删除
 		printf("删除了：");
@@ -149,12 +149,6 @@ void DeleteByName(Node* head, const char* target_name)
 	}
 }
 
-//			//汇报操作
-//			printf("找到第%d个节点为目标节点\n", i);
-//			printf("名字是：%s", target_pre->next->stu.name);
-//
-// 			删除前驱节点之后的节点
-//			DeleteNextStudent(target_pre);
 //=================================辅助函数====================================
 
 
