@@ -91,6 +91,7 @@ void DeleteAll(Node* head)
 }
 
 
+//=================================辅助函数====================================
 int CheckContinue()
 {
 	printf("输入【q】退出，【其他键+回车】继续 => ");
@@ -195,7 +196,7 @@ void SaveData(Node* head)
 		fwrite(&cur->stu, sizeof(Student), 1, fp01);
 	}
 	//写入记录标记
-	Student stu_00 = { 0 };
+	Student stu_00 = { -1,0,-1 };
 	fwrite(&stu_00, sizeof(Student), 1, fp01);
 	printf("数据保存完成\n");
 	//退出文件
@@ -225,7 +226,7 @@ void LoadData(Node* head)
 		}
 		fread(&node->stu, sizeof(Student), 1, fp01);
 		//连接有效节点node到list尾部
-		if (node->stu.age && node->stu.name && node->stu.num)
+		if (node->stu.age != -1 && node->stu.name != 0 && node->stu.num != -1)
 		{
 			cur->next = node;
 			i++;

@@ -24,12 +24,15 @@ extern StuDataFunc FunctionArr[];
 extern const int DataFuncCount;
 
 //基本函数
-int CheckContinue();
-void PrintError(const char* promot);
 void AddStudent(Node* head);
 Node* FindPrevStudent(Node* head, size_t option);
 void PrintStudent(Node* node);
 void DeleteNextStudent(Node* node);
+
+//辅助函数
+int CheckContinue();
+void PrintError(const char* promot);
+
 
 //复合函数
 Node* CreatNode();

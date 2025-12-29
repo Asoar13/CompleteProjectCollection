@@ -28,8 +28,8 @@ void StudentTable()
 	LINE("È«²¿")
 		PrintAll(head);
 
-	LINE("É¾³ý")
-	DeleteAll(head);
+	//LINE("É¾³ý")
+	//DeleteAll(head);
 
 	LINE("½áÊø")
 		SaveData(head);
