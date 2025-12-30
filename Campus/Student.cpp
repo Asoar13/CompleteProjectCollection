@@ -73,13 +73,18 @@ void DeleteAll(Node* head)
 	printf("成功删除所有数据!\n");
 }
 
-void DeleteByName(Node* head, const char* target_name)
+void DeleteByName(Node* head)
 {
 	if (!head->next)
 	{
 		printf("链表中没有数据\n");
 		return;
 	}
+	//获取目标
+	char target_name[LENGTH];
+	printf("输入需要删除的姓名 => ");
+	while (!scanf("%s", target_name))	PrintError("姓名");
+
 	//准备遍历链表
 	int count = 0;
 	Nd_node* nd_head = (Nd_node*)calloc(sizeof(Nd_node), 1);
@@ -111,6 +116,7 @@ void DeleteByName(Node* head, const char* target_name)
 			count++;
 		}
 	}
+
 	//分类讨论
 	///n个目标
 	if (count > 1)

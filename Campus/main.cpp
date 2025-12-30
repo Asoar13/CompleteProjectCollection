@@ -29,7 +29,7 @@ void StudentTable()
 		PrintAll(head);
 
 	LINE("É¾³ýÄ¿±ê")
-		DeleteByName(head,"8");
+		DeleteByName(head);
 
 	//LINE("²âÊÔ")
 	//	printf("%d",strcmp("11231", "22321"));

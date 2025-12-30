@@ -52,7 +52,7 @@ void AddStudents(Node* head);
 void PrintAll(Node* head);
 void SortInOption(Node* head);
 void DeleteAll(Node* head);
-void DeleteByName(Node* head, const char* target_name);
+void DeleteByName(Node* head);
 void DeleteByNum(Node* head , int tatget_num);
 
 ///链表文件操作
